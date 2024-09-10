@@ -12,8 +12,7 @@ class BinaryGame:
         self.width = width
         self.height = height
         self.board = [['.'] * width for _ in range(height)]
-        self.player_1 = None
-        self.last_played = None
+        self.last_player = None
 
     def is_valid_move(self, x, y, digit):
         '''
@@ -87,9 +86,10 @@ class BinaryGame:
         valid_move, reason = self.is_valid_move(x, y, digit)
         if valid_move:
             self.board[int(y)][int(x)] = str(digit)
-            if self.player_1 == None:
-                self.player_1 = int(digit)
-            self.last_played = int(digit)
+            if self.last_player == None:
+                self.last_player = 1
+            else:
+                self.last_player = 3 - self.last_player
             return (True, None)
             
         return (False, reason)
@@ -111,10 +111,7 @@ class BinaryGame:
     def get_winner(self):
 
         if self.is_game_over():
-            if self.player_1 == self.last_played:
-                return 1
-            else:
-                return 2
+            return self.last_player
         return None
 
 class CommandInterface:

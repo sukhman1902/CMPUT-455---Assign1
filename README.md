@@ -10,13 +10,11 @@
 
 - [x] genmove()
 
-- [ ] winner()
+- [x] winner()
 
 ## Assumptions Based on Public Tests
 
 - "Resign" only occurs after a "genmove" command.
-
-- Players are not taking turns.
 
 ## Clarifications Needed
 
