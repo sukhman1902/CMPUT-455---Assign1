@@ -12,6 +12,16 @@
 
 - [x] winner()
 
+## Commands for the pre-submission log
+
+- Use ```script presubmission.log``` to start tracking the terminal and ```Ctrl-D``` to end the session
+
+```commandline
+script presubmission.log
+python3 a1test.py a1.py assignment1-public-tests.txt
+Ctrl-D
+```
+
 ## Assumptions Based on Public Tests
 
 - "Resign" only occurs after a "genmove" command.
