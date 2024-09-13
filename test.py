@@ -12,7 +12,8 @@ class BinaryGame:
         self.width = width
         self.height = height
         self.board = [['.'] * width for _ in range(height)]
-        self.last_player = None
+        self.player_1 = None
+        self.last_played = None
 
     def is_valid_move(self, x, y, digit):
         '''
@@ -86,10 +87,9 @@ class BinaryGame:
         valid_move, reason = self.is_valid_move(x, y, digit)
         if valid_move:
             self.board[int(y)][int(x)] = str(digit)
-            if self.last_player == None:
-                self.last_player = 1
-            else:
-                self.last_player = 3 - self.last_player
+            if self.player_1 == None:
+                self.player_1 = int(digit)
+            self.last_played = int(digit)
             return (True, None)
             
         return (False, reason)
@@ -111,7 +111,10 @@ class BinaryGame:
     def get_winner(self):
 
         if self.is_game_over():
-            return self.last_player
+            if self.player_1 == self.last_played:
+                return 1
+            else:
+                return 2
         return None
 
 class CommandInterface:
@@ -121,6 +124,7 @@ class CommandInterface:
     def __init__(self):
         # Define the string to function command mapping
         self.game = None
+        self.cmds = []
         self.command_dict = {
             "help" : self.help,
             "game" : self.game_cmd,
@@ -162,6 +166,7 @@ class CommandInterface:
 
     # List available commands
     def help(self, args):
+        self.cmds.append(f"help: {str(args)}")
         for command in self.command_dict:
             if command != "help":
                 print(command)
@@ -175,6 +180,7 @@ class CommandInterface:
     #======================================================================================
 
     def game_cmd(self, args):
+        self.cmds.append(f"game: {str(args)}")
         if len(args) != 2:
             raise ValueError("'game' command requires 2 arguments: width and height")
         width, height = map(int, args)
@@ -184,6 +190,7 @@ class CommandInterface:
         return True
     
     def show(self, args):
+        self.cmds.append(f"show: {str(args)}")
         if self.game is None:
             raise ValueError("No game in progress. Use 'game' command to start a new game.")
         for row in self.game.board:
@@ -191,6 +198,7 @@ class CommandInterface:
         return True
     
     def play(self, args):
+        self.cmds.append(f"play: {str(args)}")
         # Check if there is an exiting game
         if self.game is None:
             raise ValueError("No game in progress. Use 'game' command to start a new game.")
@@ -210,6 +218,7 @@ class CommandInterface:
         return True
     
     def legal(self, args):
+        self.cmds.append(f"legal: {str(args)}")
         if self.game is None:
             raise ValueError("No game in progress. Use 'game' command to start a new game.")
         x, y, digit = str(args[0]), str(args[1]), str(args[2])
@@ -217,6 +226,7 @@ class CommandInterface:
         return True
     
     def genmove(self, args):
+        self.cmds.append(f"genmove: {str(args)}")
         if self.game is None:
             raise ValueError("No game in progress. Use 'game' command to start a new game.")
         legal_moves = self.game.get_legal_moves()
@@ -230,6 +240,7 @@ class CommandInterface:
         return True
     
     def winner(self, args):
+        self.cmds.append(f"winner: {str(args)}")
         if self.game is None:
             raise ValueError("No game in progress. Use 'game' command to start a new game.")
         winner = self.game.get_winner()
@@ -237,6 +248,7 @@ class CommandInterface:
             print("unfinished")
         else:
             print(winner)
+            print(self.cmds)
         return True
     
     #======================================================================================
